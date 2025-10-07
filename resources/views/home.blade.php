@@ -4,11 +4,7 @@
 @section('page-title', 'Spam Annihilator')
 @section('page-tagline', 'Easily block spam from Discord, Telegram and other invite links')
 
-@section('header-form')
-<p style="padding: 10rem 0;">We're under construction and will be ready soon!</p>
-@endsection
-
-@section('content') 
+@section('content')
   <section class="primary testimonials">
     <div class="wrapper">
         <h1>Testimonials</h1>
