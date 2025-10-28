@@ -66,7 +66,7 @@
 <header class="accent">
 	<div class="wrapper">
 		<img 
-			src="@yield('header-avatar-src', '/images/spam-attack.avif')"
+			src="@yield('header-avatar-src', '/images/spam-attack-577x577.avif')"
 			alt="@yield('header-avatar-alt', 'Robot being attacked by human')" 
 			fetchpriority="high"
 			class="header-avatar"
@@ -74,7 +74,7 @@
 			height="450"
 		>
 		<h1>@yield('page-title', 'Spam Destroyer')</h1>
-		<p>@yield('page-tagline', 'Easily block spam from Discord, Telegram and other invite links')</p>
+		<p>@yield('page-tagline', 'Block invite link spam from Discord, Telegram and others')</p>
 
 		@hasSection('header-button')
 		<p>

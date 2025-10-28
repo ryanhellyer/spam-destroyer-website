@@ -2,7 +2,7 @@
 
 @section('body-class', 'home')
 @section('page-title', 'Spam Destroyer')
-@section('page-tagline', 'Easily block spam from Discord, Telegram and other invite links')
+@section('page-tagline', 'Block invite link spam from Discord, Telegram and others')
 
 @section('content')
 	<section class="primary testimonials">
@@ -17,8 +17,8 @@
 
 			<blockquote>
 				<img src="/images/georg-preller.avif" width="300" height="300" alt="Georg Preller">
-				<p>Spam was ruining the Abenteuer Freundschaft - Wandern / Hiking group. Spam Destroyer gave us zero spam immediately. Highly recommended!</p>
-				<cite>Georg Preller – Abenteuer Freundschaft</cite>
+				<p>Spam has threatened the telegram groups of Abenteuer Freundschaft. Spam Destroyer stopped spam bots immediatly down to zero. Also, our wordpress comment section is spam-free now. Thank you for the releave!</p>
+				<cite>Georg Preller – <a href="https://www.abenteuer-freundschaft.de">Abenteuer Freundschaft</a></cite>
 			</blockquote>
 
 			<blockquote>
