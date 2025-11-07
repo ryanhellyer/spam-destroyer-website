@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
-import { copyFileSync, cpSync, mkdirSync } from 'fs';
+import { copyFileSync, cpSync, mkdirSync, rmSync } from 'fs';
 import { resolve } from 'path';
 
 export default defineConfig({
@@ -31,8 +31,19 @@ export default defineConfig({
             closeBundle() {
                 const source = resolve(__dirname, 'resources/images');
                 const dest = resolve(__dirname, 'public/images');
+                rmSync(dest, { recursive: true, force: true });
                 cpSync(source, dest, { recursive: true });
                 console.log('Copied resources/images/ to public/images/');
+            },
+        },
+        {
+            name: 'copy-fonts',
+            closeBundle() {
+                const source = resolve(__dirname, 'resources/fonts');
+                const dest = resolve(__dirname, 'public/fonts');
+                rmSync(dest, { recursive: true, force: true });
+                cpSync(source, dest, { recursive: true });
+                console.log('Copied resources/fonts/ to public/fonts/');
             },
         },
     ],
