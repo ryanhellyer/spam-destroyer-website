@@ -35,9 +35,9 @@ class AnalyticsSyncService
             //     $redisKeys = array_merge($redisKeys, $result);
             //   } while ($cursor !== 0);
             // Current usage (15-min sync intervals) typically results in <100 keys, so keys() is acceptable.
-            $redisKeys = Redis::keys(self::REDIS_PREFIX . '*');
-            
-            if (!is_array($redisKeys)) {
+            $redisKeys = Redis::keys(self::REDIS_PREFIX.'*');
+
+            if (! is_array($redisKeys)) {
                 $redisKeys = [];
             }
 
@@ -50,19 +50,19 @@ class AnalyticsSyncService
             // But Redis facade's get() expects keys WITHOUT Laravel prefix (it adds it automatically)
             $redisData = [];
             $laravelPrefix = config('database.redis.options.prefix', '');
-            
+
             foreach ($redisKeys as $fullKey) {
                 try {
                     // Remove Laravel prefix and our prefix to get the path
                     // Full key: 'laravel-database-analytics:hit:checking/test'
                     // After removing prefix: 'checking/test'
-                    $path = str_replace($laravelPrefix . self::REDIS_PREFIX, '', $fullKey);
-                    
+                    $path = str_replace($laravelPrefix.self::REDIS_PREFIX, '', $fullKey);
+
                     // Use Redis facade to get value - it expects key without Laravel prefix
                     // So we use our prefix + path
-                    $facadeKey = self::REDIS_PREFIX . $path;
+                    $facadeKey = self::REDIS_PREFIX.$path;
                     $redisValue = (int) Redis::get($facadeKey);
-                    
+
                     if ($redisValue > 0) {
                         $redisData[$fullKey] = [
                             'path' => $path,
@@ -70,7 +70,7 @@ class AnalyticsSyncService
                         ];
                     }
                 } catch (\Exception $e) {
-                    $errors[] = "Failed to read Redis key '{$fullKey}': " . $e->getMessage();
+                    $errors[] = "Failed to read Redis key '{$fullKey}': ".$e->getMessage();
                 }
             }
 
@@ -97,7 +97,7 @@ class AnalyticsSyncService
                         if ($slug !== null) {
                             // This is a /check/{slug} path - update url_mappings
                             $urlMapping = UrlMapping::where('slug', $slug)->first();
-                            if (!$urlMapping) {
+                            if (! $urlMapping) {
                                 // Slug doesn't exist - skip it
                                 return;
                             }
@@ -131,7 +131,7 @@ class AnalyticsSyncService
                         }
                     });
                 } catch (\Exception $e) {
-                    $errors[] = "Failed to sync path '{$data['path']}': " . $e->getMessage();
+                    $errors[] = "Failed to sync path '{$data['path']}': ".$e->getMessage();
                     \Log::error('AnalyticsSyncService: Error syncing path', [
                         'path' => $data['path'],
                         'error' => $e->getMessage(),
@@ -147,12 +147,12 @@ class AnalyticsSyncService
             foreach ($processedKeys as $fullKey) {
                 try {
                     // Extract path from full key (fullKey is from redisData, which uses full key as array key)
-                    $path = str_replace($laravelPrefix . self::REDIS_PREFIX, '', $fullKey);
+                    $path = str_replace($laravelPrefix.self::REDIS_PREFIX, '', $fullKey);
                     // Use facade key format (Redis facade handles Laravel prefix automatically)
-                    $facadeKey = self::REDIS_PREFIX . $path;
+                    $facadeKey = self::REDIS_PREFIX.$path;
                     Redis::del($facadeKey);
                 } catch (\Exception $e) {
-                    $errors[] = "Failed to reset Redis key '{$fullKey}': " . $e->getMessage();
+                    $errors[] = "Failed to reset Redis key '{$fullKey}': ".$e->getMessage();
                     \Log::error('AnalyticsSyncService: Error resetting Redis key', [
                         'key' => $fullKey,
                         'error' => $e->getMessage(),
@@ -161,7 +161,7 @@ class AnalyticsSyncService
             }
 
         } catch (\Exception $e) {
-            $errors[] = "Sync failed: " . $e->getMessage();
+            $errors[] = 'Sync failed: '.$e->getMessage();
             \Log::error('AnalyticsSyncService: Sync operation failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -180,7 +180,7 @@ class AnalyticsSyncService
      * Extracts the slug from paths like '/check/example-slug' or 'check/example-slug'.
      * Returns null for other paths.
      *
-     * @param string $path The tracked path (e.g., '/check/example-slug')
+     * @param  string  $path  The tracked path (e.g., '/check/example-slug')
      * @return string|null The slug if found, null otherwise
      */
     private function extractSlugFromCheckPath(string $path): ?string
@@ -189,12 +189,12 @@ class AnalyticsSyncService
         if (preg_match('#^/check/(.+)$#', $path, $matches)) {
             return $matches[1];
         }
-        
+
         // Handle paths without leading slash: 'check/example-slug'
         if (preg_match('#^check/(.+)$#', $path, $matches)) {
             return $matches[1];
         }
-        
+
         // Not a /check/{slug} path
         return null;
     }
@@ -204,7 +204,7 @@ class AnalyticsSyncService
      *
      * Handles special cases like 404s and normalizes paths.
      *
-     * @param string $path The tracked path
+     * @param  string  $path  The tracked path
      * @return string Normalized path for storage
      */
     private function normalizePathForStorage(string $path): string
@@ -213,12 +213,12 @@ class AnalyticsSyncService
         if ($path === '404') {
             return '404';
         }
-        
+
         // Normalize path: ensure leading slash for consistency
-        if (!str_starts_with($path, '/')) {
-            $path = '/' . $path;
+        if (! str_starts_with($path, '/')) {
+            $path = '/'.$path;
         }
-        
+
         return $path;
     }
 }

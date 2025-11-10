@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $jsonPath = storage_path('app/url-mappings.json');
-        
+
         // Try to load from JSON file first, fallback to hard-coded array
         if (File::exists($jsonPath)) {
             $jsonContent = File::get($jsonPath);
             $mappings = json_decode($jsonContent, true);
-            
-            if (json_last_error() !== JSON_ERROR_NONE || !is_array($mappings)) {
+
+            if (json_last_error() !== JSON_ERROR_NONE || ! is_array($mappings)) {
                 $this->command->warn('Failed to parse JSON file, using fallback data');
                 $mappings = $this->getFallbackMappings();
             }

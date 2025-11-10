@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('path', 255)->unique();
             $table->unsignedInteger('hit_count')->default(0);
             $table->timestamps();
-            
+
             $table->index('path');
         });
     }

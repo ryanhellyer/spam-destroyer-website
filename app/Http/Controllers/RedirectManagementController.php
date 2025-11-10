@@ -5,17 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\UrlMapping;
 use App\Services\AnalyticsService;
 use App\Services\UrlLookupService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class RedirectManagementController extends Controller
 {
     public function __construct(
         private UrlLookupService $urlLookupService,
         private AnalyticsService $analyticsService
-    ) {
-    }
+    ) {}
 
     /**
      * Handle form submission to create a new redirect
@@ -58,11 +57,11 @@ class RedirectManagementController extends Controller
         // Get hit statistics
         // Database count (synced, persistent)
         $dbHitCount = $urlMapping->hit_count ?? 0;
-        
+
         // Redis count (real-time, unsynced - will be added to DB on next sync)
-        $checkPath = '/check/' . $urlMapping->slug;
+        $checkPath = '/check/'.$urlMapping->slug;
         $redisHitCount = $this->analyticsService->getHitCount($checkPath);
-        
+
         // Total count (DB + Redis)
         $totalHitCount = $dbHitCount + $redisHitCount;
 
@@ -83,7 +82,7 @@ class RedirectManagementController extends Controller
         $urlMapping = UrlMapping::where('admin_hash', $hash)->firstOrFail();
 
         $validated = $request->validate([
-            'from' => 'required|string|max:255|unique:url_mappings,slug,' . $urlMapping->id,
+            'from' => 'required|string|max:255|unique:url_mappings,slug,'.$urlMapping->id,
             'to' => 'required|url|max:2048',
             'email' => 'nullable|email|max:255',
         ]);

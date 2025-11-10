@@ -16,17 +16,16 @@ class RedirectController extends Controller
     public function __construct(
         private UrlLookupService $urlLookupService,
         private AnalyticsService $analyticsService
-    ) {
-    }
+    ) {}
 
     public function check(string $slug): RedirectResponse
     {
-        if (!$this->urlLookupService->slugExists($slug)) {
+        if (! $this->urlLookupService->slugExists($slug)) {
             abort(404);
         }
 
         // Track the hit before redirecting (middleware won't catch 302 redirects)
-        $this->analyticsService->trackHit('/check/' . $slug);
+        $this->analyticsService->trackHit('/check/'.$slug);
 
         return redirect()->route('checking', ['slug' => $slug], 302);
     }
@@ -35,7 +34,7 @@ class RedirectController extends Controller
     {
         $url = $this->urlLookupService->getUrl($slug);
 
-        if (!$url) {
+        if (! $url) {
             abort(404);
         }
 

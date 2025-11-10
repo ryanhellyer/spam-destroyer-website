@@ -11,8 +11,7 @@ class TrackPathHits
 {
     public function __construct(
         private AnalyticsService $analyticsService
-    ) {
-    }
+    ) {}
 
     /**
      * Handle an incoming request.
@@ -27,17 +26,17 @@ class TrackPathHits
         // Note: 404s are tracked in the exception handler to catch all 404 cases
         if ($request->isMethod('GET') && $response->getStatusCode() === 200) {
             $path = $request->path();
-            
+
             // Skip tracking /checking/{slug} paths - they're already counted via /check/{slug}
             if (preg_match('#^checking/#', $path)) {
                 return $response;
             }
-            
+
             // Normalize admin paths to generic "admin" to avoid cluttering DB with individual admin hashes
             if (preg_match('#^admin/#', $path)) {
                 $path = '/admin';
             }
-            
+
             // Track paths
             $this->analyticsService->trackHit($path);
         }

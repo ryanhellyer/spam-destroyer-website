@@ -32,15 +32,17 @@ class SyncAnalyticsCommand extends Command
 
         $this->info("Synced {$result['synced']} paths");
 
-        if (!empty($result['errors'])) {
+        if (! empty($result['errors'])) {
             $this->error('Errors occurred during sync:');
             foreach ($result['errors'] as $error) {
                 $this->warn("  - {$error}");
             }
+
             return 1;
         }
 
         $this->info('Sync completed successfully');
+
         return 0;
     }
 }
