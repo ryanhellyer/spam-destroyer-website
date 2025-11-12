@@ -8,7 +8,9 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::post('/', [RedirectManagementController::class, 'store'])->name('redirect.store');
+Route::post('/', [RedirectManagementController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('redirect.store');
 
 Route::get('/legal-notice/', function () {
     return view('legal-notice');
