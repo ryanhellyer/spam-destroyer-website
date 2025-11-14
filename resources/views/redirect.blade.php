@@ -8,7 +8,7 @@
 </head>
 <body>
 	<script>
-		window.location.href = {!! json_encode($redirectUrl) !!};
+		window.location.href = @js($redirectUrl);
 	</script>
 	<p>If you are not redirected automatically, <a href="{{ $redirectUrl }}">click here</a>.</p>
 </body>
