@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\UrlMapping;
 use App\Services\AnalyticsService;
 use App\Services\UrlLookupService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -27,19 +28,25 @@ class RedirectManagementController extends Controller
             'to' => 'required|url|max:2048',
         ]);
 
-        // Generate a unique random slug
+        // Generate a unique random slug (race-condition-safe using DB unique constraint)
         do {
             $slug = bin2hex(random_bytes(8)); // 16 character hex string
-        } while (UrlMapping::where('slug', $slug)->exists());
+            $adminHash = hash_hmac('sha256', $slug, config('app.key'));
 
-        // Generate admin hash using HMAC with app key (non-reversible)
-        $adminHash = hash_hmac('sha256', $slug, config('app.key'));
-
-        $urlMapping = UrlMapping::create([
-            'slug' => $slug,
-            'url' => $validated['to'],
-            'admin_hash' => $adminHash,
-        ]);
+            try {
+                $urlMapping = UrlMapping::create([
+                    'slug' => $slug,
+                    'url' => $validated['to'],
+                    'admin_hash' => $adminHash,
+                ]);
+                break;
+            } catch (QueryException $e) {
+                if ($e->getCode() !== '23000') {
+                    throw $e;
+                }
+                // Slug collision — retry with a new random slug
+            }
+        } while (true);
 
         // Clear cache for this slug
         $this->urlLookupService->clearCache($urlMapping->slug);
