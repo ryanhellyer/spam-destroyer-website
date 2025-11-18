@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class UrlMapping extends Model
 {
+    protected $casts = [
+        'hit_count' => 'integer',
+    ];
+
     protected $fillable = [
         'slug',
         'url',
