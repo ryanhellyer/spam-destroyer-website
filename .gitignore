@@ -17,6 +17,9 @@
 /public/hot
 /public/storage
 /public/adminer.php
+/public/style.css
+/public/images
+/public/fonts
 /storage/*.key
 /storage/pail
 /vendor
