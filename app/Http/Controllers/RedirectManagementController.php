@@ -91,7 +91,7 @@ class RedirectManagementController extends Controller
         $urlMapping = UrlMapping::where('admin_hash', $hash)->firstOrFail();
 
         $validated = $request->validate([
-            'from' => 'required|string|max:255|unique:url_mappings,slug,'.$urlMapping->id,
+            'from' => 'required|string|max:255|regex:/^[a-zA-Z0-9\-_]+$/|unique:url_mappings,slug,'.$urlMapping->id, // restrict to URL-safe chars
             'to' => 'required|url|max:2048',
             'email' => 'nullable|email|max:255',
         ]);
