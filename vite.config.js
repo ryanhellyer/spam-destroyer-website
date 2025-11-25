@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite';
 import { copyFileSync, cpSync, mkdirSync, rmSync } from 'fs';
 import { resolve } from 'path';
 
@@ -16,7 +15,6 @@ export default defineConfig({
             input: ['resources/css/style.css'],
             refresh: true,
         }),
-        tailwindcss(),
         {
             name: 'copy-style-css',
             closeBundle() {
