@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('url_mappings', function (Blueprint $table) {
-            $table->string('admin_hash')->unique()->nullable()->after('url');
+            $table->string('admin_hash')->unique()->after('url');
             $table->string('email')->nullable()->after('admin_hash');
         });
     }
