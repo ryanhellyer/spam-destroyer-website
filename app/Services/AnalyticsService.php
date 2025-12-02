@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Redis;
 
 class AnalyticsService
 {
-    private const REDIS_PREFIX = 'analytics:hit:';
-
     /**
      * Track a hit on a path by incrementing Redis counter
      *
@@ -18,7 +16,7 @@ class AnalyticsService
     public function trackHit(string $path): void
     {
         try {
-            Redis::incr(self::REDIS_PREFIX.$path);
+            Redis::incr(AnalyticsConstants::REDIS_PREFIX.$path);
         } catch (\Exception $e) {
             // Fail gracefully - log error but don't break the request
             \Log::error('AnalyticsService: Failed to track hit', [
@@ -37,7 +35,7 @@ class AnalyticsService
     public function getHitCount(string $path): int
     {
         try {
-            $value = Redis::get(self::REDIS_PREFIX.$path);
+            $value = Redis::get(AnalyticsConstants::REDIS_PREFIX.$path);
 
             return $value ? (int) $value : 0;
         } catch (\Exception $e) {

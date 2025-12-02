@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Redis;
 
 class AnalyticsSyncService
 {
-    private const REDIS_PREFIX = 'analytics:hit:';
-
     /**
      * Sync Redis counters to MariaDB
      *
@@ -37,7 +35,7 @@ class AnalyticsSyncService
             //     $redisKeys = array_merge($redisKeys, $result);
             //   } while ($cursor !== 0);
             // Current usage (15-min sync intervals) typically results in <100 keys, so keys() is acceptable.
-            $redisKeys = Redis::keys(self::REDIS_PREFIX.'*');
+            $redisKeys = Redis::keys(AnalyticsConstants::REDIS_PREFIX.'*');
 
             if (! is_array($redisKeys)) {
                 $redisKeys = [];
@@ -58,11 +56,11 @@ class AnalyticsSyncService
                     // Remove Laravel prefix and our prefix to get the path
                     // Full key: 'laravel-database-analytics:hit:checking/test'
                     // After removing prefix: 'checking/test'
-                    $path = str_replace($laravelPrefix.self::REDIS_PREFIX, '', $fullKey);
+                    $path = str_replace($laravelPrefix.AnalyticsConstants::REDIS_PREFIX, '', $fullKey);
 
                     // Use Redis facade to get value - it expects key without Laravel prefix
                     // So we use our prefix + path
-                    $facadeKey = self::REDIS_PREFIX.$path;
+                    $facadeKey = AnalyticsConstants::REDIS_PREFIX.$path;
                     $redisValue = (int) Redis::get($facadeKey);
 
                     if ($redisValue > 0) {
@@ -149,9 +147,9 @@ class AnalyticsSyncService
             foreach ($processedKeys as $fullKey) {
                 try {
                     // Extract path from full key (fullKey is from redisData, which uses full key as array key)
-                    $path = str_replace($laravelPrefix.self::REDIS_PREFIX, '', $fullKey);
+                    $path = str_replace($laravelPrefix.AnalyticsConstants::REDIS_PREFIX, '', $fullKey);
                     // Use facade key format (Redis facade handles Laravel prefix automatically)
-                    $facadeKey = self::REDIS_PREFIX.$path;
+                    $facadeKey = AnalyticsConstants::REDIS_PREFIX.$path;
                     Redis::del($facadeKey);
                 } catch (\Exception $e) {
                     $errors[] = "Failed to reset Redis key '{$fullKey}': ".$e->getMessage();
